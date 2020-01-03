@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-let today = new Date();
+let today = new Date()
 let formattedDate = today.toLocaleDateString("en-GB")
 // let formattedUpdateDate = today.toLocaleString()
 

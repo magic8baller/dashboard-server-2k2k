@@ -11,12 +11,13 @@ export const getOne = model => async (req, res) => {
 			.exec()
 
 		if (!req.params.id.match(/^[0-9a-fA-F]{24}$/) || !doc) {
-			return res.status(404).json({message: `${model} not found`, success: false});
+			return res.status(404).json({message: `Error: ${model} not found`, success: false, user: `${req.user._id}`});
 		}
-console.log(doc)
+		console.log('Fetched resource: ', doc)
 		res.status(200).json(doc)
+
 	} catch (e) {
-		console.error(e)
+		console.error(`Error getting ${model}: `, e.message)
 		res.status(400).end()
 	}
 }
@@ -36,9 +37,13 @@ export const getMany = model => async (req, res) => {
 			.lean()
 			.exec()
 
+		if (!docs) {
+			return res.status(201).send(`Just an FYI: User doesn't have any of these resources in the database`)
+		}
+		console.log(`Cocuments in descending order: `, docs)
 		res.status(200).json(docs)
 	} catch (e) {
-
+		console.error(`Error getting all Resources: `, e.message)
 		res.status(400).send(e.message)
 	}
 }
@@ -53,10 +58,11 @@ export const createOne = model => async (req, res) => {
 	try {
 		const doc = await new model({...req.body, createdBy})
 		await doc.save()
+		console.log('new doc: ', doc)
 		res.status(201).json(doc)
 	} catch (e) {
-		console.error(e)
-		res.status(400).send(e.message)
+		console.error(e.message)
+		res.status(400).json({error: e.message, message: `Could not create new ${model}`})
 	}
 }
 
@@ -80,9 +86,9 @@ export const updateOne = model => async (req, res) => {
 			.exec()
 
 		if (!updatedDoc) {
-			return res.status(400).send(`No ${model} found`)
+			return res.status(400).send(`Update Error: ${model} not found`)
 		}
-
+		console.log('updated doc: ', updatedDoc)
 		res.status(200).json(updatedDoc)
 	} catch (e) {
 
@@ -103,10 +109,10 @@ export const removeOne = model => async (req, res) => {
 		})
 
 		if (!removed) {
-			return res.status(400).send(`${model} not found`)
+			return res.status(400).send(`Delete error: ${model} not found`)
 		}
 
-		return res.status(200).json({message: 'removed', doc: removed})
+		return res.status(200).json({message: 'Delete successful', doc: removed})
 	} catch (e) {
 		console.error(e)
 		res.status(400).end()
