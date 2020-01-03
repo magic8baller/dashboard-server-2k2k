@@ -1,6 +1,6 @@
 /**
- * @route GET /api/${document}/:id
- * @desc Get User document by ID
+ * @route GET /api/${resource}/:id
+ * @desc Get User resource by ID
  * @access private
  */
 export const getOne = model => async (req, res) => {
@@ -22,8 +22,8 @@ console.log(doc)
 }
 
 /**
- * @route GET /api/${document}
- * @desc Get all User documents
+ * @route GET /api/${resource}
+ * @desc Get all User resources
  * @access private
  */
 export const getMany = model => async (req, res) => {
@@ -44,8 +44,8 @@ export const getMany = model => async (req, res) => {
 }
 
 /**
- * @route POST /api/${document}
- * @desc Create document
+ * @route POST /api/${resource}
+ * @desc Create resource
  * @access private
  */
 export const createOne = model => async (req, res) => {
@@ -61,8 +61,8 @@ export const createOne = model => async (req, res) => {
 }
 
 /**
- * @route PUT /api/${document}/:id
- * @desc Update User document by ID
+ * @route PUT /api/${resource}/:id
+ * @desc Update User resource by ID
  * @access private
  */
 export const updateOne = model => async (req, res) => {
@@ -91,8 +91,8 @@ export const updateOne = model => async (req, res) => {
 }
 
 /**
- * @route DELETE /api/${document}/:id
- * @desc Delete User document by ID
+ * @route DELETE /api/${resource}/:id
+ * @desc Delete User resource by ID
  * @access private
  */
 export const removeOne = model => async (req, res) => {
