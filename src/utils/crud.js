@@ -40,7 +40,7 @@ export const getMany = model => async (req, res) => {
 		if (!docs) {
 			return res.status(201).send(`Just an FYI: User doesn't have any of these resources in the database`)
 		}
-		console.log(`Cocuments in descending order: `, docs)
+		console.log(`Documents in descending order: `, docs)
 		res.status(200).json(docs)
 	} catch (e) {
 		console.error(`Error getting all Resources: `, e.message)
