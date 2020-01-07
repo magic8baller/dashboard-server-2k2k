@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
-let today = new Date()
-let formattedDate = today.toLocaleDateString("en-GB")
-// let formattedUpdateDate = today.toLocaleString()
+const options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+const today = new Date();
+const formattedDate = today.toLocaleString("en-GB", options)
 
 const noteSchema = new mongoose.Schema(
 	{
@@ -16,8 +16,11 @@ const noteSchema = new mongoose.Schema(
 			maxlength: 1000
 		},
 	updatedAt: {
-		type: Date,
-		time: new Date()
+		type: String,
+		required: true,
+		default: formattedDate
+
+
 	},
 		createdBy: {
 			type: mongoose.SchemaTypes.ObjectId,

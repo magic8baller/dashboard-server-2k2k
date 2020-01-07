@@ -7,11 +7,10 @@ const todoSchema = new mongoose.Schema(
 			required: true,
 			maxlength: 100
 		},
-		status: {
-			type: String,
+		completed: {
+			type: Boolean,
 			required: true,
-			enum: ['active', 'complete'],
-			default: 'active'
+			default: false
 		},
 		createdBy: {
 			type: mongoose.SchemaTypes.ObjectId,
