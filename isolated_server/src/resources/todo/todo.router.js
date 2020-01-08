@@ -2,7 +2,6 @@ import express from 'express'
 import todoControllers from './todo.controllers.js'
 const todoRouter = express.Router()
 
-
 /**
  * @route /api/todo
  * @desc main todo routes
@@ -14,9 +13,8 @@ todoRouter
 	.get(todoControllers.getMany)
 	.post(todoControllers.createOne)
 
-
 /**
- * @route /api/todo
+ * @route /api/todo/:id
  * @desc todo routes by ID
  * @access private
  */

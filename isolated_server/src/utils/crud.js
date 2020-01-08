@@ -11,13 +11,13 @@ export const getOne = model => async (req, res) => {
 			.exec()
 
 		if (!req.params.id.match(/^[0-9a-fA-F]{24}$/) || !doc) {
-			return res.status(404).json({message: `Error: ${model} not found`, success: false, user: `${req.user._id}`});
+			return res.status(404).json({message: `Resource not found`, success: false, user: `${req.user._id}`});
 		}
-		console.log('Fetched resource: ', doc)
+		console.log('Fetched document: ', doc)
 		res.status(200).json(doc)
 
 	} catch (e) {
-		console.error(`Error getting ${model}: `, e.message)
+		console.error('Error getting document:', e.message)
 		res.status(400).end()
 	}
 }
@@ -62,7 +62,7 @@ export const createOne = model => async (req, res) => {
 		res.status(201).json(doc)
 	} catch (e) {
 		console.error(e.message)
-		res.status(400).json({error: e.message, message: `Could not create new ${model}`})
+		res.status(400).json({error: e.message, message: 'Could not create document'})
 	}
 }
 
@@ -86,7 +86,7 @@ export const updateOne = model => async (req, res) => {
 			.exec()
 
 		if (!updatedDoc) {
-			return res.status(400).send(`Update Error: ${model} not found`)
+			return res.status(400).send('Update Error: document not found')
 		}
 		console.log('updated doc: ', updatedDoc)
 		res.status(200).json(updatedDoc)
@@ -109,7 +109,7 @@ export const removeOne = model => async (req, res) => {
 		})
 
 		if (!removed) {
-			return res.status(400).send(`Delete error: ${model} not found`)
+			return res.status(400).send(`Delete error: document not found`)
 		}
 
 		return res.status(200).json({message: 'Delete successful', doc: removed})

@@ -1,10 +1,11 @@
+import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import validator from 'validator'
 dotenv.config()
-import bcrypt from 'bcryptjs'
 const {JWT_SECRET} = process.env
-import jwt from 'jsonwebtoken'
+
 const userSchema = mongoose.Schema({
 	name: {
 		type: String,
@@ -45,7 +46,7 @@ const userSchema = mongoose.Schema({
 }, {timestamp: true}
 )
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
 	const user = this
 	const token = jwt.sign({_id: user._id}, JWT_SECRET, {expiresIn: '1d'})
 	user.tokens = user.tokens.concat({token})

@@ -19,11 +19,22 @@ usersRouter.post('/register', async (req, res) => {
 	}
 })
 
+/**
+ * @route GET /users
+ * @desc get all users
+ * @role admin
+ * @access private
+ */
 usersRouter.get('/users', auth({role: ['admin']}), async (req, res) => {
 	const dbUsers = await User.find({}).select('-tokens').select('-password')
 	res.send(dbUsers)
 })
 
+/**
+ * @route POST /login
+ * @desc login user
+ * @access public
+ */
 usersRouter.post('/login', async (req, res) => {
 	try {
 		const {email, password} = req.body
@@ -34,12 +45,14 @@ usersRouter.post('/login', async (req, res) => {
 		const token = await user.generateAuthToken()
 		user.password = null
 		res.send({user, token})
+
 	} catch (error) {
 		console.log('req.body', req.body)
 		res.status(400).send(error.message)
 	}
 })
 
+// get currrent user
 usersRouter.get('/me', auth({role: ['user']}), (req, res) => {
 	res.send(req.user)
 })

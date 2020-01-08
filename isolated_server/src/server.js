@@ -1,4 +1,3 @@
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
@@ -7,26 +6,26 @@ import {auth} from './authMiddleware.js'
 import {connectDB} from './config/db.js'
 import todoRouter from './resources/todo/todo.router.js'
 import noteRouter from './resources/note/note.router.js'
-import focusRouter from './resources/focus/focus.router.js'
 import quoteRouter from './resources/quote/quote.router.js'
 import usersRouter from './resources/user/user.router.js'
 dotenv.config()
+
 const app = express()
 const {PORT} = process.env
+
 connectDB()
 
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cors())
-app.use(cookieParser())
+
 app.use('/api', auth({role: ['user']}))
 app.use('/api/todos', todoRouter)
 app.use('/api/notes', noteRouter)
 app.use('/api/quotes', quoteRouter)
-app.use('/api/focus', focusRouter)
 app.use('/', usersRouter)
-// app.use('/api', auth)
+
 app.get('/', (req, res) => {
 	res.send('VERY CA$H MONEY')
 })

@@ -3,7 +3,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 const {MONGODB_URI} = process.env
 
-
 export const connectDB = async () => {
 	try {
 		await mongoose.connect(MONGODB_URI, {
@@ -13,10 +12,10 @@ export const connectDB = async () => {
 			useUnifiedTopology: true
 		})
 
-		console.log('MongoDB Connected...')
+		console.log('*** MongoDB Connected ! ***')
 	} catch (err) {
 		console.error(err.message)
-		// Exit process with failure
+
 		process.exit(1)
 	}
 }
