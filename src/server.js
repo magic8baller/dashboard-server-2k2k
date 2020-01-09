@@ -1,7 +1,7 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-import logger from 'morgan'
+// import logger from 'morgan'
 import {auth} from './authMiddleware.js'
 import {connectDB} from './config/db.js'
 import todoRouter from './resources/todo/todo.router.js'
@@ -15,7 +15,7 @@ const {PORT} = process.env
 
 connectDB()
 
-app.use(logger('dev'))
+// app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cors())
