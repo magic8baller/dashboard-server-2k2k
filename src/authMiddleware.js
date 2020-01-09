@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken'
 import User from './resources/user/user.model.js'
 import dotenv from 'dotenv'
 dotenv.config()
-// const {JWT_SECRET} = process.env
-const JWT_SECRET='@mys3cr3t'
+const {JWT_SECRET} = process.env
+
 
 export const auth = options => (req, res, next) => {
 	try {
