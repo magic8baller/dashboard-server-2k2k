@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import validator from 'validator'
 dotenv.config()
-const {JWT_SECRET} = process.env
+// const {JWT_SECRET} = process.env
 
-
+const JWT_SECRET = 'sh0eg@z3'
 
 const userSchema = mongoose.Schema({
 	name: {
