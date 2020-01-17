@@ -1,19 +1,19 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-
 import {auth} from './authMiddleware.js'
 import {connectDB} from './config/db.js'
-import todoRouter from './resources/todo/todo.router.js'
+import focusRouter from './resources/focus/focus.router.js'
 import noteRouter from './resources/note/note.router.js'
 import quoteRouter from './resources/quote/quote.router.js'
+import todoRouter from './resources/todo/todo.router.js'
 import usersRouter from './resources/user/user.router.js'
-import focusRouter from './resources/focus/focus.router.js'
+
 dotenv.config()
 
 const app = express()
-// const {PORT} = process.env
-const PORT = 8000
+const {PORT} = process.env
+
 
 connectDB()
 
