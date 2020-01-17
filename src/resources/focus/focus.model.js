@@ -8,7 +8,7 @@ const focusSchema = mongoose.Schema({
 		required: true,
 		default: false
 	},
-	user: {
+	createdBy: {
 		type: mongoose.SchemaTypes.ObjectId,
 		ref: 'user',
 		required: true
