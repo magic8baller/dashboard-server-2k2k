@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 const focusSchema = mongoose.Schema({
-	focus: {
+	text: {
 		type: String
 	},
 	completed: {
