@@ -12,8 +12,8 @@ import focusRouter from './resources/focus/focus.router.js'
 dotenv.config()
 
 const app = express()
-// const {PORT} = process.env
-const PORT = 8000
+const {PORT} = process.env
+// const PORT = 8000
 
 connectDB()
 
