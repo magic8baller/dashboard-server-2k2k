@@ -2,7 +2,9 @@ import jwt from 'jsonwebtoken'
 import User from './resources/user/user.model.js'
 import dotenv from 'dotenv'
 dotenv.config()
-const {JWT_SECRET} = process.env
+// const {JWT_SECRET} = process.env
+
+const JWT_SECRET = 'sh0eg@z3'
 
 
 export const auth = options => (req, res, next) => {

@@ -8,10 +8,12 @@ import todoRouter from './resources/todo/todo.router.js'
 import noteRouter from './resources/note/note.router.js'
 import quoteRouter from './resources/quote/quote.router.js'
 import usersRouter from './resources/user/user.router.js'
+import focusRouter from './resources/focus/focus.router.js'
 dotenv.config()
 
 const app = express()
-const {PORT} = process.env
+// const {PORT} = process.env
+const PORT = 8000
 
 connectDB()
 
@@ -22,6 +24,7 @@ app.use(cors())
 
 app.use('/api', auth({role: ['user']}))
 app.use('/api/todos', todoRouter)
+app.use('/api/focus', focusRouter)
 app.use('/api/notes', noteRouter)
 app.use('/api/quotes', quoteRouter)
 app.use('/', usersRouter)
