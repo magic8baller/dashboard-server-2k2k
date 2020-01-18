@@ -6,3 +6,5 @@ photoRouter.get('/', photoControllers.getMany)
 photoRouter.get('/:id', photoControllers.getOne)
 photoRouter.post('/daily', photoControllers.addDaily)
 photoRouter.post('/save/:link', photoControllers.saveToFaves)
+
+export default photoRouter
