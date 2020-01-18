@@ -1,9 +1,25 @@
 import mongoose from 'mongoose'
 const quoteSchema = mongoose.Schema({
-	quote: String,
-	author: String,
-	favorite: Boolean,
-	userQuote: Boolean,
+	quote: {
+		type: String,
+		required: true,
+		maxlength: 255
+	},
+	author: {
+		type: String,
+		required: true,
+		maxlength: 50
+	},
+	favorite: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
+	userQuote: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
 	date: String,
 	createdBy: {
 		type: mongoose.SchemaTypes.ObjectId,

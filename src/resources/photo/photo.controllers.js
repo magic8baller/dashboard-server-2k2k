@@ -1,130 +1,101 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import express from "express"
-import DOCUMENT from './photo.model.js'
-import multer from "multer";
-import AWS from "aws-sdk"
-const router = express.Router();
+import Photo from './photo.model.js'
+import axios from 'axios'
 
-// Multer ships with storage engines DiskStorage and MemoryStorage
-// And Multer adds a body object and a file or files object to the request object. The body object contains the values of the text fields of the form, the file or files object contains the files uploaded via the form.
-const storage = multer.memoryStorage();
-const upload = multer({storage: storage});
+/**
+ * @route GET /api/photos/:id
+ * @desc Get User Photo by ID
+ * @access private
+ */
+export const getOne = () => async (req, res) => {
+	try {
+		const doc = await Photo
+			.findOne({createdBy: req.user._id, _id: req.params.id})
+			.lean()
+			.exec()
 
-// Get all Documents s Routes
-router.route("/").get((req, res, next) => {
-	DOCUMENT.find(
-		{},
-		null,
-		{
-			sort: {createdAt: 1}
-		},
-		(err, docs) => {
-			if (err) {
-				return next(err);
-			}
-			res.status(200).send(docs);
+		if (!req.params.id.match(/^[0-9a-fA-F]{24}$/) || !doc) {
+			return res.status(404).json({message: `Resource not found`, success: false, user: `${req.user._id}`});
 		}
-	);
-});
+		console.log('Fetched document: ', doc)
+		res.status(200).json(doc)
 
-// Route to get a single existing GO data (needed for the Edit functionality)
-router.route("/:id").get((req, res, next) => {
-	DOCUMENT.findById(req.params.id, (err, go) => {
-		if (err) {
-			return next(err);
+	} catch (e) {
+		console.error('Error getting document:', e.message)
+		res.status(400).end()
+	}
+}
+
+/**
+ * @route GET /api/photos
+ * @desc Get all User resources
+ * @access private
+ */
+export const getMany = () => async (req, res) => {
+	try {
+		const docs = await Photo
+			.find({createdBy: req.user._id})
+			.sort({
+				date: -1
+			})
+			.lean()
+			.exec()
+
+		if (!docs) {
+			return res.status(201).send(`Just an FYI: User doesn't have any of these resources in the database`)
 		}
-		res.json(go);
-	});
-});
+		console.log(`Documents in descending order: `, docs)
+		res.status(200).json(docs)
+	} catch (e) {
+		console.error(`Error getting all Resources: `, e.message)
+		res.status(400).send(e.message)
+	}
+}
 
-// route to upload a pdf document file
-// In upload.single("file") - the name inside the single-quote is the name of the field that is going to be uploaded.
-router.post("/upload", upload.single("file"), function (req, res) {
-	const file = req.file;
-	const s3FileURL = process.env.AWS_FILE_UPLOAD_LINK;
+/**
+ * @route POST /api/photos/daily
+ * @desc Create resource
+ * @access private
+ */
+export const addDaily = () => async (req, res) => {
+	const createdBy = req.user._id
+	try {
+		const fetchUnsplashResponse = await axios.get('https://source.unsplash.com/category/nature/daily')
 
-	let s3bucket = new AWS.S3({
-		accessKeyId: process.env.AWS_KEY,
-		secretAccessKey: process.env.AWS_SECRET_KEY,
-		region: process.env.AWS_REGION
-	});
+		const doc = await new Photo({url: fetchUnsplashResponse.request.res.responseUrl, createdBy})
+		await doc.save()
+		console.log('new doc: ', doc)
+		res.status(201).json(doc)
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).json({error: e.message, message: 'Could not add unsplash photo'})
+	}
+}
+/**
+ * @route POST /api/photos/save/:link
+ * @desc Update User resource by ID
+ * @access private
+ */
+export const saveToFaves = model => async (req, res) => {
+	try {
+		const updatedDoc = await model
+			.findOneAndUpdate(
+				{
+					createdBy: req.user._id,
+					_id: req.params.id
+				},
+				{...req.body, url: decodeURIComponent(req.params.link)},
+				{new: true}
+			)
+			.lean()
+			.exec()
 
-	//Where you want to store your file
-
-	var params = {
-		Bucket: process.env.AWS_BUCKET,
-		Key: file.originalname,
-		Body: file.buffer,
-		ContentType: file.mimetype,
-		ACL: "public-read"
-	};
-
-	s3bucket.upload(params, function (err, data) {
-		if (err) {
-			res.status(500).json({error: true, Message: err});
-		} else {
-			res.send({data});
-			var newFileUploaded = {
-				description: req.body.description,
-				fileLink: s3FileURL + file.originalname,
-				s3_key: params.Key
-			};
-			var document = new DOCUMENT(newFileUploaded);
-			document.save(function (error, newFile) {
-				if (error) {
-					throw error;
-				}
-			});
+		if (!updatedDoc) {
+			return res.status(400).send('Update Error: document not found')
 		}
-	});
-});
+		console.log('updated doc: ', updatedDoc)
+		res.status(200).json(updatedDoc)
+	} catch (e) {
 
-// Route to edit existing record's description field
-// Here, I am updating only the description in this mongo record. Hence using the "$set" parameter
-router.route("/edit/:id").put((req, res, next) => {
-	DOCUMENT.findByIdAndUpdate(
-		req.params.id,
-		{$set: {description: Object.keys(req.body)[0]}},
-		{new: true},
-		(err, updateDoc) => {
-			if (err) {
-				return next(err);
-			}
-			res.status(200).send(updateDoc);
-		}
-	);
-});
-
-// Router to delete a DOCUMENT file
-router.route("/:id").delete((req, res, next) => {
-	DOCUMENT.findByIdAndRemove(req.params.id, (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		//Now Delete the file from AWS-S3
-		// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property
-		let s3bucket = new AWS.S3({
-			accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-			region: process.env.AWS_REGION
-		});
-
-		let params = {
-			Bucket: process.env.AWS_BUCKET_NAME,
-			Key: result.s3_key
-		};
-
-		s3bucket.deleteObject(params, (err, data) => {
-			if (err) {
-				console.log(err);
-			} else {
-				res.send({
-					status: "200",
-					responseType: "string",
-					response: "success"
-				});
-			}
-		});
-	});
-});
+		res.status(400).send(e.message)
+	}
+}

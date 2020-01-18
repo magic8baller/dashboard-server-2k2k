@@ -9,6 +9,7 @@ import noteRouter from './resources/note/note.router.js'
 import quoteRouter from './resources/quote/quote.router.js'
 import usersRouter from './resources/user/user.router.js'
 import focusRouter from './resources/focus/focus.router.js'
+import photoRouter from './resources/photo/photo.router.js'
 dotenv.config()
 
 const app = express()
@@ -27,6 +28,7 @@ app.use('/api/todos', todoRouter)
 app.use('/api/focus', focusRouter)
 app.use('/api/notes', noteRouter)
 app.use('/api/quotes', quoteRouter)
+app.use('/api/photos', photoRouter)
 app.use('/', usersRouter)
 
 app.get('/', (req, res) => {

@@ -1,10 +1,23 @@
 import mongoose from 'mongoose'
 const photoSchema = mongoose.Schema({
-	url: String,
-	filename: String,
-	favorite: Boolean,
-	userPhoto: Boolean,
-	date: String,
+	url: {
+		type: String,
+		unique: true
+	},
+	filename: {
+		type: String
+	},
+	favorite: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
+	userPhoto: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
+	date: new Date(),
 	createdBy: {
 		type: mongoose.SchemaTypes.ObjectId,
 		ref: 'user',
