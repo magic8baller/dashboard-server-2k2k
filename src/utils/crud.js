@@ -1,3 +1,5 @@
+import axios from 'axios'
+const APP_ID = '3b46a96cce0a22e7c93cebef8a8eab04e97b1490c700798c26e06f0d16922950'
 /**
  * @route GET /api/${resource}/:id
  * @desc Get User resource by ID
@@ -119,10 +121,60 @@ export const removeOne = model => async (req, res) => {
 	}
 }
 
+/**
+ * @route POST /api/photos/daily
+ * @desc Create resource
+ * @access private
+ */
+export const getDaily = (model) => async (req, res) => {
+	const createdBy = req.user._id
+	try {
+		const fetchUnsplashResponse = await axios.get(`https://api.unsplash.com/photos/random/?client_id=${APP_ID}&featured=true&q=outdoors`)
+
+		const doc = new model({url: fetchUnsplashResponse.data.urls.full, createdBy})
+		await doc.save()
+		console.log('new doc: ', doc)
+		res.status(201).json(doc)
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).json({error: e.message, message: 'Could not get unsplash photo'})
+	}
+}
+/**
+ * @route POST /api/photos/save/:link
+ * @desc Update User resource by ID
+ * @access private
+ */
+export const saveToFaves = model => async (req, res) => {
+	try {
+		const updatedDoc = await model
+			.findOneAndUpdate(
+				{
+					createdBy: req.user._id,
+					_id: req.params.id
+				},
+				{...req.body, url: decodeURIComponent(req.params.link)},
+				{new: true}
+			)
+			.lean()
+			.exec()
+
+		if (!updatedDoc) {
+			return res.status(400).send('Update Error: document not found')
+		}
+		console.log('updated doc: ', updatedDoc)
+		res.status(200).json(updatedDoc)
+	} catch (e) {
+
+		res.status(400).send(e.message)
+	}
+}
 export const crudControllers = model => ({
 	removeOne: removeOne(model),
 	updateOne: updateOne(model),
 	getMany: getMany(model),
 	getOne: getOne(model),
-	createOne: createOne(model)
+	createOne: createOne(model),
+	getDaily: getDaily(model),
+	saveToFaves: saveToFaves(model)
 })

@@ -2,10 +2,7 @@ import mongoose from 'mongoose'
 const photoSchema = mongoose.Schema({
 	url: {
 		type: String,
-		unique: true
-	},
-	filename: {
-		type: String
+		required: true
 	},
 	favorite: {
 		type: Boolean,
