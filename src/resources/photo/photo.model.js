@@ -17,7 +17,6 @@ const photoSchema = mongoose.Schema({
 		required: true,
 		default: false
 	},
-	date: new Date(),
 	createdBy: {
 		type: mongoose.SchemaTypes.ObjectId,
 		ref: 'user',
