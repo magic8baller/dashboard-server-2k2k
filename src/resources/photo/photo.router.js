@@ -1,4 +1,4 @@
-import * as photoControllers from './photo.controllers'
+import * as photoControllers from './photo.controllers.js'
 import express from 'express'
 const photoRouter = express.Router()
 
