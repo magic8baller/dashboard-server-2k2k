@@ -5,7 +5,7 @@ const photoSchema = mongoose.Schema({
 	favorite: Boolean,
 	userPhoto: Boolean,
 	date: String,
-	user: {
+	createdBy: {
 		type: mongoose.SchemaTypes.ObjectId,
 		ref: 'user',
 		required: true

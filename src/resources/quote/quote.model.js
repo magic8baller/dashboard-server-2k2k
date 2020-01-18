@@ -5,7 +5,7 @@ const quoteSchema = mongoose.Schema({
 	favorite: Boolean,
 	userQuote: Boolean,
 	date: String,
-	user: {
+	createdBy: {
 		type: mongoose.SchemaTypes.ObjectId,
 		ref: 'user',
 		required: true
