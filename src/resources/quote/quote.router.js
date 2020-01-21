@@ -11,7 +11,7 @@ const quoteRouter = express.Router()
 
 quoteRouter
 	.route('/')
-	// .get(quoteControllers.getMany)
+	.get(quoteControllers.getMany)
 	.post(quoteControllers.createOne)
 
 
