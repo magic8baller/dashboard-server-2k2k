@@ -1,5 +1,5 @@
 import express from 'express'
-import linkControllers from './link.controllers.js.js'
+import linkControllers from './link.controllers.js'
 const linkRouter = express.Router()
 
 /**
