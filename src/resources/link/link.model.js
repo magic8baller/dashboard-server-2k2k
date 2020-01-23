@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const linksSchema = mongoose.Schema({
+const linkSchema = mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -17,6 +17,6 @@ const linksSchema = mongoose.Schema({
 }, {
 	timestamps: true
 });
-const Links = mongoose.model('Links', linksSchema)
+const Link = mongoose.model('Link', linkSchema)
 
-export default Links
+export default Link
